@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import tech.chillo.avis.service.UtilisateurService;
 
 import static org.springframework.http.HttpMethod.POST;
 
@@ -22,11 +23,11 @@ import static org.springframework.http.HttpMethod.POST;
 public class ConfigurationSecuriteApplication{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtFilter jwtFilter;
-    private final UserDetailsService userDetailsService;
-    public ConfigurationSecuriteApplication(BCryptPasswordEncoder bCryptPasswordEncoder, JwtFilter jwtFilter, UserDetailsService userDetailsService) {
+   // private final UserDetailsService userDetailsService;
+    public ConfigurationSecuriteApplication(BCryptPasswordEncoder bCryptPasswordEncoder, JwtFilter jwtFilter) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtFilter = jwtFilter;
-        this.userDetailsService = userDetailsService;
+      //  this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -49,18 +50,33 @@ public class ConfigurationSecuriteApplication{
                         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                         .build();
     }
+    //pour crypter les mots de passe en base de données
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder (){
+        return new BCryptPasswordEncoder();
+    }
 
+
+     //AuthenticationManager qui gére la connexion qui s'appui sur le provider qui se connecte à la base de données
     @Bean
     public AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+   // Nous permet d'acceder à la base de données
     @Bean
-    public AuthenticationProvider authenticationProvider () {
+    public AuthenticationProvider authenticationProvider (UserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
+        daoAuthenticationProvider.setPasswordEncoder(this.bCryptPasswordEncoder);
         return daoAuthenticationProvider;
     }
+
+    /*@Bean
+    public UserDetailsService userDetailsService (){
+        return new UtilisateurService();
+    }
+
+     */
 
 }

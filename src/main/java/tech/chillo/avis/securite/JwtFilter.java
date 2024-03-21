@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
-import tech.chillo.avis.entite.Utilisateur;
 import tech.chillo.avis.service.UtilisateurService;
 
 import java.io.IOException;

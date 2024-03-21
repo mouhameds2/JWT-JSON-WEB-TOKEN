@@ -2,6 +2,7 @@ package tech.chillo.avis.controleur;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,8 +24,11 @@ import java.util.Map;
 @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 public class UtilisateurControleur {
 
+
     private AuthenticationManager authenticationManager;
+
     private UtilisateurService utilisateurService;
+
     private JwtService jwtService;
 
     @PostMapping(path = "inscription")
@@ -40,9 +44,11 @@ public class UtilisateurControleur {
 
     @PostMapping(path = "connexion")
     public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
-        final Authentication authenticate = authenticationManager.authenticate(
+       final Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
         );
+       log.info("resultat {}", authenticate.isAuthenticated()
+       );
 
         if(authenticate.isAuthenticated()) {
             return this.jwtService.generate(authentificationDTO.username());

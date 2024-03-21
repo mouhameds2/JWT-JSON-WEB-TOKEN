@@ -2,9 +2,9 @@ package tech.chillo.avis.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import tech.chillo.avis.repository.ValidationRepository;
 import tech.chillo.avis.entite.Utilisateur;
 import tech.chillo.avis.entite.Validation;
-import tech.chillo.avis.repository.ValidationRepository;
 
 import java.time.Instant;
 import java.util.Random;

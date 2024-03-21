@@ -2,26 +2,31 @@ package tech.chillo.avis.service;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import tech.chillo.avis.repository.UtilisateurRepository;
 import tech.chillo.avis.TypeDeRole;
 import tech.chillo.avis.entite.Role;
 import tech.chillo.avis.entite.Utilisateur;
 import tech.chillo.avis.entite.Validation;
-import tech.chillo.avis.repository.UtilisateurRepository;
 
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 
 @AllArgsConstructor
+
 @Service
 public class UtilisateurService implements UserDetailsService {
+
     private UtilisateurRepository utilisateurRepository;
+
     private BCryptPasswordEncoder passwordEncoder;
+
     private ValidationService validationService;
     public void inscription(Utilisateur utilisateur) {
 
@@ -57,10 +62,13 @@ public class UtilisateurService implements UserDetailsService {
         this.utilisateurRepository.save(utilisateurActiver);
     }
 
+
+    //loadUserByUsername part chercher un user dans la base de données en fonction du mail passé et puis comparer les mot de passe
     @Override
     public Utilisateur loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.utilisateurRepository
                 .findByEmail(username)
                 .orElseThrow(() -> new  UsernameNotFoundException("Aucun utilisateur ne corespond à cet identifiant"));
     }
+
 }

@@ -1,0 +1,5 @@
+Configuration SMTP
+
+https://mailmeteor.com/blog/gmail-smtp-settings
+
+https://myaccount.google.com/apppasswords?pli=1&rapt=AEjHL4O2Z8uG8yZwc2GbyTJnopDyzzmoWyUXB7Qjq-dbuiW9-DHWKFZM5ubN0b1lpq_l3HG_rQR7S2mnhHtCMsgSjfDDmObuuf2RvM_dYoo6cnmhRgYvrBE
