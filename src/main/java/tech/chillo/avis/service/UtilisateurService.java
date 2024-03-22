@@ -41,7 +41,7 @@ public class UtilisateurService implements UserDetailsService {
     private ValidationService validationService;
     private UtilisateurDTOMapper utilisateurDTOMapper;
 
- *
+
     public void inscription(Utilisateur utilisateur) {
 
         if(!utilisateur.getEmail().contains("@")) {
