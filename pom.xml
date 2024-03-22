@@ -8,7 +8,7 @@
 		<version>3.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>tech.chillo</groupId>
+	<groupId>tech.fall</groupId>
 	<artifactId>avis-utilisateurs</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>avis-utilisateurs</name>
