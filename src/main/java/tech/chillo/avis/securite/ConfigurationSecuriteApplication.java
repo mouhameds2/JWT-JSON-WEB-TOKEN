@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import tech.chillo.avis.service.UtilisateurService;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
@@ -32,21 +33,25 @@ public class ConfigurationSecuriteApplication{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        int id = 0;
         return
                 httpSecurity
                         .csrf(AbstractHttpConfigurer::disable)
                         .authorizeHttpRequests(
                                 authorize ->
                                         authorize
-                                                .requestMatchers(POST,"/inscription").permitAll()
-                                                .requestMatchers(POST,"/activation").permitAll()
-                                                .requestMatchers(POST,"/connexion").permitAll()
+                                                .requestMatchers(POST,"utilisateur/inscription").permitAll()
+                                                .requestMatchers(POST,"utilisateur/activation").permitAll()
+                                                .requestMatchers(POST,"utilisateur/connexion").permitAll()
+                                                .requestMatchers(GET,"/utilisateur/{id}").permitAll()
+                                                .requestMatchers(GET,"/utilisateur").permitAll()
+                                                .requestMatchers(GET,"/utilisateur/user").permitAll()
                                                 .anyRequest().authenticated()
-                        )
+                        )//on ajoute une session pour l'authentification de l'utilsateur
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->
                                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-                                )
+                                )//on ajoute un filtre ici
                         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                         .build();
     }

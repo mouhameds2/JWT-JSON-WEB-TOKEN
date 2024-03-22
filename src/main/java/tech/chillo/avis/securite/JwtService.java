@@ -18,7 +18,9 @@ import java.util.function.Function;
 @AllArgsConstructor
 @Service
 public class JwtService {
-    private final String ENCRIPTION_KEY = "608f36e92dc66d97d5933f0e6371493cb4fc05b1aa8f8de64014732472303a7c";
+
+    //notre clé de crypto généré par le site https://randomgenerate.io/encryption-key-generator#google_vignette
+    private final String ENCRIPTION_KEY = "9e55c91b68014f1b834617fef32be40138509f38a6ca2385f6419f148e0f5465";
     private UtilisateurService utilisateurService;
     
     public Map<String, String> generate(String username) {
@@ -52,26 +54,32 @@ public class JwtService {
                 .getBody();
     }
 
+    //pour générer le jeton qu'on envoe à l'utilisateur
+
     private Map<String, String> generateJwt(Utilisateur utilisateur) {
+        //date de création du jeton en millisecondes
         final long currentTime = System.currentTimeMillis();
         final long expirationTime = currentTime + 30 * 60 * 1000;
-
+        // les informations qu'il faut passer exemeple le nom
         final Map<String, Object> claims = Map.of(
                 "nom", utilisateur.getNom(),
                 Claims.EXPIRATION, new Date(expirationTime),
                 Claims.SUBJECT, utilisateur.getEmail()
         );
-
+//on stock notre clé dans une chaine de caractère
         final String bearer = Jwts.builder()
                 .setIssuedAt(new Date(currentTime))
                 .setExpiration(new Date(expirationTime))
                 .setSubject(utilisateur.getEmail())
                 .setClaims(claims)
+                //clé de signature
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
         return Map.of("bearer", bearer);
     }
 
+
+    //Methode pour avoir notre clé pour pouvoir chiffré les données
     private Key getKey() {
         final byte[] decoder = Decoders.BASE64.decode(ENCRIPTION_KEY);
         return Keys.hmacShaKeyFor(decoder);

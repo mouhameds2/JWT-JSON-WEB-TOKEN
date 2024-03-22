@@ -1,0 +1,11 @@
+JWT
+pour la génération d'un token à un utilisateur :
+1- L'utilisateur se connecte avec son username et password s'il existe dans la base de données, on lui renvoie un token, l'utilisateur va utiliser ce token pour faire des action dans
+l'application.
+
+Pour utiliser le JWT on rajoute les dépendence iojsonwebtoken dans le site https://mvnrepository.com/artifact/io.jsonwebtoken
+Y'aura 3 dépendences à ajouter en l'occurence :
+- JJWT-IMP pour l'implatation
+- jjwt-api qui va mettre à notre disposition des api
+-jwt-jackson pour gerer le mapping
+
