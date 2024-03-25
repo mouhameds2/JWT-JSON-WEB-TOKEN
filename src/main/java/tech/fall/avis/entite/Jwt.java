@@ -3,6 +3,8 @@ package tech.fall.avis.entite;
 import jakarta.persistence.*;
 import lombok.*;
 
+
+@Setter
 @Getter
 @Builder
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class Jwt {
     private String valeur;
     private boolean desactiveted;
     private boolean expire;
+
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE})
     @JoinColumn(name = "utilisateur_id")

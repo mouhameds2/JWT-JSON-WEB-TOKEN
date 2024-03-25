@@ -41,6 +41,11 @@ public class UtilisateurControleur {
         this.utilisateurService.activation(activation);
     }
 
+    @PostMapping(path = "deconnexion")
+    public void deconnexion() {
+        this.jwtService.deconnexion();
+    }
+
     @PostMapping(path = "connexion",consumes = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
         //pour l'authentification on authenticationManager fournit par  Spring security
