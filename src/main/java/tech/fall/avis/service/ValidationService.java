@@ -1,6 +1,8 @@
 package tech.fall.avis.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tech.fall.avis.repository.ValidationRepository;
 import tech.fall.avis.entite.Utilisateur;
@@ -11,6 +13,7 @@ import java.util.Random;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
+@Transactional
 @AllArgsConstructor
 @Service
 public class ValidationService {
@@ -36,5 +39,9 @@ public class ValidationService {
 
     public Validation lireEnFonctionDuCode(String code) {
         return this.validationRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Votre code est invalide"));
+    }
+    @Scheduled(cron = "0 */1 * * * * ")
+    public  void supprimerCodeExpire() {
+        this.validationRepository.deleteAllByExpirationBefore(Instant.now());
     }
 }

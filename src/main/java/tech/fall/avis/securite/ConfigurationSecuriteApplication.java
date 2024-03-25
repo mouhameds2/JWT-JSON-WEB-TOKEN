@@ -42,6 +42,8 @@ public class ConfigurationSecuriteApplication{
                                                 .requestMatchers(POST,"utilisateur/inscription").permitAll()
                                                 .requestMatchers(POST,"utilisateur/activation").permitAll()
                                                 .requestMatchers(POST,"utilisateur/connexion").permitAll()
+                                                .requestMatchers(POST,"utilisateur/modifier-mot-de-passe").permitAll()
+                                                .requestMatchers(POST,"utilisateur/nouveau-mot-de-passe").permitAll()
                                                 .requestMatchers(GET,"/utilisateur/{id}").permitAll()
                                                 .requestMatchers(GET,"/utilisateur").permitAll()
                                                 .requestMatchers(GET,"/utilisateur/user").permitAll()

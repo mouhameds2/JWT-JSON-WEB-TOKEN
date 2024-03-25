@@ -101,4 +101,20 @@ public class UtilisateurService implements UserDetailsService {
                 map(utilisateur -> convertToUtilisateurDTO(utilisateur));
               
     }
+
+    public void modifierMotDePass(Map<String, String> parameters) {
+        Utilisateur utilisateur = this.loadUserByUsername(parameters.get("email")) ;
+        this.validationService.enregistrer(utilisateur);
+    }
+
+    public void nouveauMotDePass(Map<String, String> parameters) {
+        Utilisateur utilisateur = this.loadUserByUsername(parameters.get("email")) ;
+
+        final  Validation validation = this.validationService.lireEnFonctionDuCode(parameters.get("code"));
+       if(validation.getUtilisateur().getEmail().equals(utilisateur.getEmail())){
+           String mdpCrypte = this.passwordEncoder.encode(parameters.get("password"));
+           utilisateur.setMdp(mdpCrypte);
+           this.utilisateurRepository.save(utilisateur);
+       }
+    }
 }

@@ -41,10 +41,7 @@ public class UtilisateurControleur {
         this.utilisateurService.activation(activation);
     }
 
-    @PostMapping(path = "deconnexion")
-    public void deconnexion() {
-        this.jwtService.deconnexion();
-    }
+
 
     @PostMapping(path = "connexion",consumes = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
@@ -71,5 +68,20 @@ public class UtilisateurControleur {
     @GetMapping(path = "user", produces = MediaType.APPLICATION_JSON_VALUE)
     public Stream<UtilisateurDTO> getUtilisateur(){
         return this.utilisateurService.getUtilisateur();
+    }
+
+    @PostMapping(path = "deconnexion")
+    public void deconnexion() {
+        this.jwtService.deconnexion();
+    }
+
+    @PostMapping(path = "modifier-mot-de-passe",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void modifierMotDePass(@RequestBody Map<String, String> activation) {
+        this.utilisateurService.modifierMotDePass(activation);
+    }
+
+    @PostMapping(path = "nouveau-mot-de-passe",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void nouveauMotDePass(@RequestBody Map<String, String> activation) {
+        this.utilisateurService.nouveauMotDePass(activation);
     }
 }

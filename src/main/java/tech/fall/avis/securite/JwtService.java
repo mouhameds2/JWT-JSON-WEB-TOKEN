@@ -141,7 +141,7 @@ public class JwtService {
                 false,
                 false
 
-        ).orElseThrow(() -> new RuntimeException("Token invalide") );
+        ).orElseThrow(() -> new RuntimeException("===Token invalide====") );
         jwt.setDesactiveted(true);
         jwt.setExpire(true);
         log.info("====== jwt ==== " +jwt.isExpire());
@@ -154,6 +154,7 @@ public class JwtService {
 
     //Methode pour supprimer les tokens tous les jours de façon automatique
    // @Scheduled(cron = "0 */1 * * * *") pour supprimer les tokens dans la BDD toutes les minutes
+    //https://crontab.guru/
     @Scheduled(cron = "@daily")
     public void removeUselessJwt() {
        log.info("Suppression des token à {}", Instant.now());
