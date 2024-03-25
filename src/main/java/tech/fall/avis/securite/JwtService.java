@@ -7,7 +7,9 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import tech.fall.avis.entite.Jwt;
 import tech.fall.avis.entite.Utilisateur;
+import tech.fall.avis.repository.JwtRepository;
 import tech.fall.avis.service.UtilisateurService;
 
 import java.security.Key;
@@ -19,13 +21,25 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    public static final String BEARER = "bearer";
     //notre clé de crypto généré par le site https://randomgenerate.io/encryption-key-generator#google_vignette
     private final String ENCRIPTION_KEY = "9e55c91b68014f1b834617fef32be40138509f38a6ca2385f6419f148e0f5465";
     private UtilisateurService utilisateurService;
+    private JwtRepository jwtRepository;
     
     public Map<String, String> generate(String username) {
         Utilisateur utilisateur = this.utilisateurService.loadUserByUsername(username);
-        return this.generateJwt(utilisateur);
+        Map<String, String> jwtMap = this.generateJwt(utilisateur);
+
+        //implementer pour la deconnexion de l'utilisateur on desactive le token. ici le token est actif et n'est pas expiré
+        //on met le token dans la base de données en créant la classe Jwt et le service JwtService
+        final Jwt jwt = Jwt.builder()
+                .valeur(jwtMap.get(BEARER))
+                .desactiveted(false)
+                .expire(false)
+                .utilisateur(utilisateur).build();
+        this.jwtRepository.save(jwt);
+        return jwtMap;
     }
 
     public String extractUsername(String token) {
@@ -75,7 +89,8 @@ public class JwtService {
                 //clé de signature
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
-        return Map.of("bearer", bearer);
+        //on retourne un map qui contient un baerer
+        return Map.of(BEARER, bearer);
     }
 
 
@@ -85,4 +100,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(decoder);
     }
 
+    public Jwt tokenByValue(String valeur) {
+        return this.jwtRepository.findByValeur(valeur).orElseThrow(( )-> new RuntimeException("Token inconnu"));
+    }
 }

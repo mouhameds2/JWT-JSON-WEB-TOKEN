@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.fall.avis.dto.AuthentificationDTO;
 import tech.fall.avis.dto.UtilisateurDTO;
 import tech.fall.avis.entite.Utilisateur;
+import tech.fall.avis.securite.JwtFilter;
 import tech.fall.avis.securite.JwtService;
 import tech.fall.avis.service.UtilisateurService;
 
@@ -42,6 +43,7 @@ public class UtilisateurControleur {
 
     @PostMapping(path = "connexion",consumes = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
+        //pour l'authentification on authenticationManager fournit par  Spring security
        final Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
         );
@@ -49,8 +51,11 @@ public class UtilisateurControleur {
        );
 
 
+
         if(authenticate.isAuthenticated()) {
+
             return this.jwtService.generate(authentificationDTO.username());
+
         }
         return null;
     }
