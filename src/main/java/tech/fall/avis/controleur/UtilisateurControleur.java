@@ -3,6 +3,7 @@ package tech.fall.avis.controleur;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,6 +70,15 @@ public class UtilisateurControleur {
     public Stream<UtilisateurDTO> getUtilisateur(){
         return this.utilisateurService.getUtilisateur();
     }
+
+   //Methode pour deonner accès uniquement aux Manager et aux Admin
+    // @PreAuthorize("hasAuthority( 'ROLE_ADMINISTRATEUR')") accès pour uniquement les admin
+    @PreAuthorize("hasAnyAuthority('MANAGER_READ', ' ADMINISTRATEUR_READ')")
+    @GetMapping(path = "user-admin", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Stream<UtilisateurDTO> getUtilisateurForAdmin(){
+        return this.utilisateurService.getUtilisateur();
+    }
+
 
     @PostMapping(path = "deconnexion")
     public void deconnexion() {

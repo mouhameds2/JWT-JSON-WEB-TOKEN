@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,7 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
+
+//@EnableMethodSecurity pour dire à Srping qu'une partie de la sécurité est configurée dans les méthodes
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
 public class ConfigurationSecuriteApplication{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -48,7 +52,7 @@ public class ConfigurationSecuriteApplication{
                                                 .requestMatchers(GET,"/utilisateur/{id}").permitAll()
                                                 .requestMatchers(GET,"/utilisateur").permitAll()
                                                 .requestMatchers(GET,"/utilisateur/user").permitAll()
-
+                                                .requestMatchers(GET,"/avis").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMINISTRATEUR")
                                                 .anyRequest().authenticated()
                         )//on ajoute une session pour l'authentification de l'utilsateur
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->

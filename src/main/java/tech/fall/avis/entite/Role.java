@@ -6,12 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import tech.fall.avis.TypeDeRole;
+import lombok.*;
+import tech.fall.avis.enume.TypeDeRole;
 
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor

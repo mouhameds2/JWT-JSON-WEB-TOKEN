@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import tech.fall.avis.dto.UtilisateurDTO;
 import tech.fall.avis.mapper.UtilisateurDTOMapper;
 import tech.fall.avis.repository.UtilisateurRepository;
-import tech.fall.avis.TypeDeRole;
+import tech.fall.avis.enume.TypeDeRole;
 import tech.fall.avis.entite.Role;
 import tech.fall.avis.entite.Utilisateur;
 import tech.fall.avis.entite.Validation;
