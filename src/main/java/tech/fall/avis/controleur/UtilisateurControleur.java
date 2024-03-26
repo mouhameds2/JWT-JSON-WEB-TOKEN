@@ -84,4 +84,13 @@ public class UtilisateurControleur {
     public void nouveauMotDePass(@RequestBody Map<String, String> activation) {
         this.utilisateurService.nouveauMotDePass(activation);
     }
+
+
+    @PostMapping(path = "refresh-token")
+    public @ResponseBody Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest) {
+        return this.jwtService.refreshToken(refreshTokenRequest);
+
+    }
+
+
 }

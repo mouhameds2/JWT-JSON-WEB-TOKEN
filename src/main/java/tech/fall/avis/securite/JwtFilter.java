@@ -39,7 +39,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
             token = authorization.substring(7);
             tokenDansLaBDD=this.jwtService.tokenByValue(token);
-            this.jwtService.tokenByValue(token);
             isTokenExpired = jwtService.isTokenExpired(token);
             username = jwtService.extractUsername(token);
             System.out.println("===Token==== " +token

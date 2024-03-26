@@ -40,6 +40,8 @@ public class ValidationService {
     public Validation lireEnFonctionDuCode(String code) {
         return this.validationRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Votre code est invalide"));
     }
+
+    // Suppression des jetons automatique 1 minute après leur expiration
     @Scheduled(cron = "0 */1 * * * * ")
     public  void supprimerCodeExpire() {
         this.validationRepository.deleteAllByExpirationBefore(Instant.now());

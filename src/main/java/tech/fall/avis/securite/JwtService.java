@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tech.fall.avis.entite.Jwt;
+import tech.fall.avis.entite.RefreshToken;
 import tech.fall.avis.entite.Utilisateur;
 import tech.fall.avis.repository.JwtRepository;
 import tech.fall.avis.service.UtilisateurService;
@@ -21,6 +22,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 public class JwtService {
 
     public static final String BEARER = "bearer";
+   ;
     public static final String REFRESH = "refresh";
     public static final String TOKEN_INVALIDE = "Token invalide";
     //notre clé de crypto généré par le site https://randomgenerate.io/encryption-key-generator#google_vignette
@@ -45,9 +48,20 @@ public class JwtService {
                 false
         ).orElseThrow(() -> new RuntimeException("Token invalide ou inconnu"));
     }
+//
+
     public Map<String, String> generate(String username) {
         Utilisateur utilisateur = this.utilisateurService.loadUserByUsername(username);
-        Map<String, String> jwtMap = this.generateJwt(utilisateur);
+       this.disableTokens(utilisateur);
+        log.info("====  disableTokens(utilisateur) ===");
+        final Map<String, String> jwtMap = new java.util.HashMap<>(this.generateJwt(utilisateur));
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .valeur(UUID.randomUUID().toString())
+                .expire(false)
+                .creation(Instant.now())
+                .expiration(Instant.now().plusMillis(30 *60 *1000))
+                .build();
 
         //implementer pour la deconnexion de l'utilisateur on desactive le token. ici le token est actif et n'est pas expiré
         //on met le token dans la base de données en créant la classe Jwt et le service JwtService
@@ -55,8 +69,12 @@ public class JwtService {
                 .valeur(jwtMap.get(BEARER))
                 .desactiveted(false)
                 .expire(false)
-                .utilisateur(utilisateur).build();
+                .utilisateur(utilisateur)
+                .refreshToken(refreshToken)
+                .build();
         this.jwtRepository.save(jwt);
+        String put = jwtMap.put(REFRESH, refreshToken.getValeur());
+        log.info("valeur put ====== " + put);
         return jwtMap;
     }
     public void disableTokens(Utilisateur utilisateur){
@@ -155,9 +173,34 @@ public class JwtService {
     //Methode pour supprimer les tokens tous les jours de façon automatique
    // @Scheduled(cron = "0 */1 * * * *") pour supprimer les tokens dans la BDD toutes les minutes
     //https://crontab.guru/
+
     @Scheduled(cron = "@daily")
     public void removeUselessJwt() {
        log.info("Suppression des token à {}", Instant.now());
         this.jwtRepository.deleteAllByExpireAndDesactiveted(true, true);
     }
+
+
+
+    //Supprimer les jetons expirés
+   @Scheduled(cron = "@daily")
+    public void removeJetonExpire() {
+        log.info("Suppression des token à {}", Instant.now());
+        this.jwtRepository.deleteAllByExpire(true);
+    }
+
+
+    public Map<String, String> refreshToken(Map<String, String> refreshTokenRequest) {
+        log.info("Token renouvelé", Instant.now());
+        final Jwt jwt = this.jwtRepository.findByRefreshToken(refreshTokenRequest.get(REFRESH)).orElseThrow(() -> new RuntimeException(TOKEN_INVALIDE));
+        if(jwt.getRefreshToken().isExpire() || jwt.getRefreshToken().getExpiration().isBefore(Instant.now())) {
+            throw new RuntimeException(TOKEN_INVALIDE);
+
+        }
+        this.disableTokens(jwt.getUtilisateur());
+        return this.generate(jwt.getUtilisateur().getEmail());
+
+    }
+
+
 }

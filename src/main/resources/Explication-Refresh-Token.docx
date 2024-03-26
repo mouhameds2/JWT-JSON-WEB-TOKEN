@@ -1,0 +1,15 @@
+
+
+
+
+REFRESH TOKEN
+
+Quand le token l'utilisateur de l'utilsateur est expiré on va faire un refresh de son token pour ne pas le déconnecter
+
+
+
+
+ 
+
+
+

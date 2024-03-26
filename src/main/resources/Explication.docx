@@ -1,5 +1,5 @@
 JWT
-pour la gÃ©nÃ©ration d'un token Ã  un utilisateur :
+pour la génération d'un token à  un utilisateur :
 1- L'utilisateur se connecte avec son username et password s'il existe dans la base de donnÃ©es, on lui renvoie un token, l'utilisateur va utiliser ce token pour faire des action dans
 l'application.
 
@@ -8,4 +8,44 @@ Y'aura 3 dÃ©pendences Ã  ajouter en l'occurence :
 - JJWT-IMP pour l'implatation
 - jjwt-api qui va mettre Ã  notre disposition des api
 -jwt-jackson pour gerer le mapping
+
+Pour avoir la structure de JWT 
+https://jwt.io/
+
+ 
+
+
+
+
+
+
+
+pour générer une clé de cryptage il faut chercher encrypt key generator ou aller dans le site https://randomgenerate.io/encryption-key-generator#google_vignette et générer une clé 
+voici notre clé générée 
+9e55c91b68014f1b834617fef32be40138509f38a6ca2385f6419f148e0f5465
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

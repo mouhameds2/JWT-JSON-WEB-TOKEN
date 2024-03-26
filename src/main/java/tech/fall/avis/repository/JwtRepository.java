@@ -3,6 +3,7 @@ package tech.fall.avis.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import tech.fall.avis.entite.Jwt;
+import tech.fall.avis.entite.RefreshToken;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -26,5 +27,12 @@ public interface JwtRepository extends JpaRepository<Jwt, Integer> {
 
 
     void deleteAllByExpireAndDesactiveted(boolean expire, boolean desactive);
+
+    void deleteAllByExpire(boolean expire);
+
+
+    @Query("FROM Jwt j WHERE j.refreshToken.valeur = :valeur")
+    Optional<Jwt> findByRefreshToken(String valeur);
+
 
 }
