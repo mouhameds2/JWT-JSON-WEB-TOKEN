@@ -1,5 +1,6 @@
 package tech.fall.avis.service;
 
+import io.jsonwebtoken.security.InvalidKeyException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,7 +39,7 @@ public class ValidationService {
     }
 
     public Validation lireEnFonctionDuCode(String code) {
-        return this.validationRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Votre code est invalide"));
+        return this.validationRepository.findByCode(code).orElseThrow(() -> new InvalidKeyException("======Votre code est invalide ======"));
     }
 
     // Suppression des jetons automatique 1 minute après leur expiration

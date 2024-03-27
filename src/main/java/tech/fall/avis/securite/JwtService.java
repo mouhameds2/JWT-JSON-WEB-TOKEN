@@ -42,13 +42,19 @@ public class JwtService {
     private JwtRepository jwtRepository;
 
     public Jwt tokenByValue(String value) {
-        return this.jwtRepository.findByValeurAndDesactivetedAndExpire(
-                value,
-                false,
-                false
-        ).orElseThrow(() -> new RuntimeException("Token invalide ou inconnu"));
+        // Récupérer le jeton JWT en utilisant findByValeurAndDesactivetedAndExpire
+        Jwt jwt = this.jwtRepository.findByValeurAndDesactivetedAndExpire(value,
+                        false,
+                        false)
+                .orElse(null); // Utilisez orElse pour obtenir la valeur optionnelle, null si non trouvé
+
+        if (jwt == null) {
+
+            log.info("====  Token invalide ==="); // Journaliser un message si le jeton n'est pas trouvé
+        }
+
+        return jwt; // Renvoyer le jeton JWT trouvé ou null s'il n'est pas trouvé
     }
-//
 
     public Map<String, String> generate(String username) {
         Utilisateur utilisateur = this.utilisateurService.loadUserByUsername(username);

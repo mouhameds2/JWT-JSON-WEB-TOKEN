@@ -15,6 +15,7 @@ import tech.fall.avis.securite.JwtFilter;
 import tech.fall.avis.securite.JwtService;
 import tech.fall.avis.service.UtilisateurService;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -63,9 +64,10 @@ public class UtilisateurControleur {
         return null;
     }
     @GetMapping(path = "{id}", produces =  MediaType.APPLICATION_JSON_VALUE)
-    public Stream<UtilisateurDTO> getUtilisateurById(@PathVariable int id){
+    public Stream<UtilisateurDTO> getUtilisateurById(@PathVariable int id) throws UserPrincipalNotFoundException {
         return  this.utilisateurService.getUtilisateurById(id);
     }
+    @PreAuthorize("hasAuthority('ADMINISTRATEUR_READ')")
     @GetMapping(path = "user", produces = MediaType.APPLICATION_JSON_VALUE)
     public Stream<UtilisateurDTO> getUtilisateur(){
         return this.utilisateurService.getUtilisateur();

@@ -2,6 +2,9 @@ package tech.fall.avis.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.NotFound;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +17,7 @@ import tech.fall.avis.entite.Role;
 import tech.fall.avis.entite.Utilisateur;
 import tech.fall.avis.entite.Validation;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +25,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @AllArgsConstructor
-
+@Slf4j
 @Service
 public class UtilisateurService implements UserDetailsService {
 
@@ -36,10 +40,10 @@ public class UtilisateurService implements UserDetailsService {
     public void inscription(Utilisateur utilisateur) {
 
         if(!utilisateur.getEmail().contains("@")) {
-            throw  new RuntimeException("Votre mail invalide");
+            throw  new MailAuthenticationException("Votre mail invalide");
         }
         if(!utilisateur.getEmail().contains(".")) {
-            throw  new RuntimeException("Votre mail invalide");
+            throw  new MailAuthenticationException("Votre mail invalide");
         }
 
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
@@ -52,10 +56,29 @@ public class UtilisateurService implements UserDetailsService {
 
         Role roleUtilisateur = new Role();
         roleUtilisateur.setLibelle(TypeDeRole.UTILISATEUR);
-        utilisateur.setRole(roleUtilisateur);
 
-        utilisateur = this.utilisateurRepository.save(utilisateur);
-        this.validationService.enregistrer(utilisateur);
+
+        if(utilisateur.getRole() != null && utilisateur.getRole().getLibelle().equals(TypeDeRole.ADMINISTRATEUR)){
+            roleUtilisateur.setLibelle(TypeDeRole.ADMINISTRATEUR);
+            utilisateur.setRole(roleUtilisateur);
+            utilisateur.setActif(true);
+            log.info("======== ADMINISTRATEUR créé ==== "+ utilisateur.getEmail());
+        }
+        if(utilisateur.getRole() != null && utilisateur.getRole().getLibelle().equals(TypeDeRole.MANAGER)){
+            roleUtilisateur.setLibelle(TypeDeRole.MANAGER);
+            utilisateur.setRole(roleUtilisateur);
+            utilisateur.setActif(true);
+            log.info("======== MANAGER créé ===="+ utilisateur.getEmail());
+        }
+
+            utilisateur.setRole(roleUtilisateur);
+            utilisateur =this.utilisateurRepository.save(utilisateur);
+
+            if(roleUtilisateur.getLibelle().equals((TypeDeRole.UTILISATEUR))) {
+                log.info("======== UTILISATEUR créé ==== "+ utilisateur.getEmail());
+                this.validationService.enregistrer(utilisateur);
+            }
+
     }
 
     public void activation(Map<String, String> activation) {
@@ -79,12 +102,14 @@ public class UtilisateurService implements UserDetailsService {
     }
 
 
-    public Stream<UtilisateurDTO> getUtilisateurById(int id) {
+    public Stream<UtilisateurDTO> getUtilisateurById(int id) throws UserPrincipalNotFoundException {
 
         Stream<UtilisateurDTO> optionalUtilisateurDTO = this.utilisateurRepository.findById(id)
                 .stream().map(utilisateurDTOMapper);
-        if (optionalUtilisateurDTO == null) {
-            throw new EntityNotFoundException("le client " + id + " n'existe pas");
+        log.info("======Client ======== "+ id);
+        if (!this.utilisateurRepository.findById(id).isPresent()) {
+            log.info("le client " + id + " n'existe pas");
+            throw new UserPrincipalNotFoundException("le client " + id + " n'existe pas");
         }
         return optionalUtilisateurDTO;
     }

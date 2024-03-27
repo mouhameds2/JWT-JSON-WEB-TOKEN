@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -27,10 +28,15 @@ import static org.springframework.http.HttpMethod.POST;
 public class ConfigurationSecuriteApplication{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtFilter jwtFilter;
+
+
+
+
    // private final UserDetailsService userDetailsService;
     public ConfigurationSecuriteApplication(BCryptPasswordEncoder bCryptPasswordEncoder, JwtFilter jwtFilter) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtFilter = jwtFilter;
+
       //  this.userDetailsService = userDetailsService;
     }
 
@@ -52,7 +58,7 @@ public class ConfigurationSecuriteApplication{
                                                 .requestMatchers(GET,"/utilisateur/{id}").permitAll()
                                                 .requestMatchers(GET,"/utilisateur").permitAll()
                                                 .requestMatchers(GET,"/utilisateur/user").permitAll()
-                                                .requestMatchers(GET,"/avis").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMINISTRATEUR")
+                                                //.requestMatchers(GET,"/avis").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMINISTRATEUR")
                                                 .anyRequest().authenticated()
                         )//on ajoute une session pour l'authentification de l'utilsateur
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->
