@@ -62,6 +62,14 @@ public class ConfigurationSecuriteApplication{
 
 
      //AuthenticationManager qui gére la connexion qui s'appui sur le provider qui se connecte à la base de données
+// on va créer notre object AuthenticationManager qui est capablede gérer une source d'authentification
+    /*
+    Le bean AuthenticationManager est utilisé pour l'authentification des utilisateurs dans une application Spring Security.
+     Il est responsable de l'authentification des demandes d'accès à votre application.La méthode prend un paramètre AuthenticationConfiguration.
+      Ce paramètre est utilisé pour obtenir une instance d'un AuthenticationManager à partir de la configuration de l'authentification.
+    La méthode getAuthenticationManager() de AuthenticationConfiguration renvoie une instance d'AuthenticationManager.
+     */
+
     @Bean
     public AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

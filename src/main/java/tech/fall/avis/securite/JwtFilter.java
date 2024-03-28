@@ -46,7 +46,10 @@ public class JwtFilter extends OncePerRequestFilter {
             +"===username==== " +username  );
         }
 
-        if(!isTokenExpired && username != null && tokenDansLaBDD.getUtilisateur().getEmail().equals(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if(!isTokenExpired && username != null
+                && tokenDansLaBDD.getUtilisateur().getEmail()
+                .equals(username) && SecurityContextHolder
+                .getContext().getAuthentication() == null) {
             UserDetails userDetails = utilisateurService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
